@@ -31,7 +31,7 @@ const flattenVisible = (nodes, level = 0) => {
 }
 
 export default {
-  props: ['nodes'],
+  props: ['nodes', 'cluster'],
   data () {
     return {
       roots: []

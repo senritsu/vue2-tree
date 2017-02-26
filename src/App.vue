@@ -3,13 +3,17 @@
     <div class="container">
       <div class="columns">
         <div class="column is-3">
-          <div class="notification is-info">Tree (flat DOM)</div>
-          <tree-flat :nodes="[tree]"></tree-flat>
+          <div class="notification" :class="left ? 'is-success' : 'is-danger'" @click="left = !left">Tree (flat DOM)</div>
+          <div style="height: 600px; overflow: auto; position: relative">
+            <tree-flat v-if="left" :nodes="[tree]"></tree-flat>
+          </div>
         </div>
         <div class="column is-3">
-          <div class="notification is-info">Tree (nested DOM)</div>
+          <div class="notification" :class="right ? 'is-success' : 'is-danger'" @click="right = !right">Tree (nested DOM)</div>
           <button class="button" disabled>Expand All</button>
-          <tree-node :node="tree"></tree-node>
+          <div style="height: 600px; overflow: auto; position: relative">
+            <tree-node v-if="right" :node="tree"></tree-node>
+          </div>
         </div>
       </div>
     </div>
@@ -41,7 +45,9 @@ export default {
   name: 'app',
   data () {
     return {
-      tree: generateNode(0, 0)
+      tree: generateNode(0, 0),
+      left: true,
+      right: true
     }
   },
   components: {

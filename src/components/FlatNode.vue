@@ -2,7 +2,9 @@
   <div class="tree-node" :style="{marginLeft: `${level}rem`}">
     <p>
       <span class="icon is-small" @click="expand">
-        <i class="fa" :class="nodeIcon"></i>
+        <transition name="spin" mode="out-in">
+          <i class="fa" :class="nodeIcon" :key="nodeIcon"></i>
+        </transition>
       </span>
       {{node.text}}
       <small v-if="hasChildren && !node.expanded">{{ node.children.length }}</small>
@@ -46,5 +48,17 @@ export default {
 }
 small {
   opacity: 0.3;
+}
+.fa-minus-square-o.spin-enter-active, .fa-plus-square-o.spin-enter-active {
+  transition: transform 0.15s ease-out;
+}
+.fa-minus-square-o.spin-leave-active, .fa-plus-square-o.spin-leave-active {
+  transition: transform 0.15s ease-in;
+}
+.fa-minus-square-o.spin-enter, .fa-minus-square-o.spin-leave-to {
+  transform: rotate(-45deg);
+}
+.fa-plus-square-o.spin-enter, .fa-plus-square-o.spin-leave-to {
+  transform: rotate(45deg);
 }
 </style>

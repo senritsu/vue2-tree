@@ -7,7 +7,9 @@
         </transition>
       </span>
       {{node.text}}
-      <small v-if="hasChildren && !node.expanded">{{ node.children.length }}</small>
+      <transition name="number">
+        <small v-if="collapsed">{{ node.children.length }}</small>
+      </transition>
     </p>
   </div>
 </template>
@@ -16,6 +18,9 @@
 export default {
   props: ['node', 'level'],
   computed: {
+    collapsed () {
+      return this.hasChildren && !this.node.expanded
+    },
     hasChildren () {
       return this.node.children && this.node.children.length
     },
@@ -48,12 +53,23 @@ export default {
 }
 small {
   opacity: 0.3;
+  display: inline-block;
 }
+
+.number-enter-active, .number-leave-active {
+  transition: all 0.2s;
+}
+
+.number-enter, .number-leave-to {
+  opacity: 0;
+  transform: translateX(-0.5rem);
+}
+
 .fa-minus-square-o.spin-enter-active, .fa-plus-square-o.spin-enter-active {
-  transition: transform 0.15s ease-out;
+  transition: transform 0.1s ease-out;
 }
 .fa-minus-square-o.spin-leave-active, .fa-plus-square-o.spin-leave-active {
-  transition: transform 0.15s ease-in;
+  transition: transform 0.1s ease-in;
 }
 .fa-minus-square-o.spin-enter, .fa-minus-square-o.spin-leave-to {
   transform: rotate(-45deg);

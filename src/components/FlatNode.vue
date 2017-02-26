@@ -6,7 +6,7 @@
           <i class="fa" :class="nodeIcon" :key="nodeIcon"></i>
         </transition>
       </span>
-      {{node.text}}
+      {{node.text}} ({{index}})
       <transition name="number">
         <small v-if="collapsed">{{ node.children.length }}</small>
       </transition>
@@ -16,7 +16,7 @@
 
 <script>
 export default {
-  props: ['node', 'level'],
+  props: ['node', 'level', 'index'],
   computed: {
     collapsed () {
       return this.hasChildren && !this.node.expanded
@@ -37,8 +37,8 @@ export default {
       if (!this.hasChildren) {
         return
       }
-
       this.$set(this.node, 'expanded', !this.node.expanded)
+      this.$emit('expanded')
     }
   }
 }

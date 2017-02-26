@@ -4,9 +4,7 @@
       <div class="columns">
         <div class="column is-3">
           <div class="notification" :class="left ? 'is-success' : 'is-danger'" @click="left = !left">Tree (flat DOM)</div>
-          <div style="height: 600px; overflow: auto; position: relative">
-            <tree-flat v-if="left" :nodes="[tree]"></tree-flat>
-          </div>
+          <tree-flat v-if="left" :nodes="[tree]"></tree-flat>
         </div>
         <div class="column is-3">
           <div class="notification" :class="right ? 'is-success' : 'is-danger'" @click="right = !right">Tree (nested DOM)</div>
@@ -14,6 +12,10 @@
           <div style="height: 600px; overflow: auto; position: relative">
             <tree-node v-if="right" :node="tree"></tree-node>
           </div>
+        </div>
+        <div class="column is-3">
+          <div class="notification" :class="virtualized ? 'is-success' : 'is-danger'" @click="virtualized = !virtualized">Tree (flat DOM, virtualized)</div>
+          <tree-flat v-if="virtualized" :nodes="[tree]" :virtualize="true"></tree-flat>
         </div>
       </div>
     </div>
@@ -47,7 +49,8 @@ export default {
     return {
       tree: generateNode(0, 0),
       left: true,
-      right: true
+      right: true,
+      virtualized: true
     }
   },
   components: {

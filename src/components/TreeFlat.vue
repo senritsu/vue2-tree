@@ -1,9 +1,13 @@
 <template lang="html">
   <div class="tree">
     <button class="button" @click="expandAll">Expand All</button>
-    <transition-group name="node">
-      <flat-node class="node" v-for="x in flatNodes" :key="x.node.id" :node="x.node" :level="x.level"></flat-node>
-    </transition-group>
+    <div style="height: 600px; overflow: auto; position: relative" ref="container">
+      <div :style="{height: `${paddingTop}px`}"></div>
+      <transition-group name="node" tag="div">
+        <flat-node class="node" v-for="x in (virtualize ? visibleChunk : flatNodes)" :key="x.node.id" :node="x.node" :level="x.level" :index="x.index" @expanded="updateVirtualization"></flat-node>
+      </transition-group>
+      <div :style="{height: `${paddingBottom}px`}"></div>
+    </div>
   </div>
 </template>
 
@@ -31,14 +35,25 @@ const flattenVisible = (nodes, level = 0) => {
 }
 
 export default {
-  props: ['nodes', 'cluster'],
+  props: ['nodes', 'virtualize'],
   data () {
     return {
-      roots: []
+      roots: [],
+      height: 0,
+      firstVisibleIndex: 0,
+      paddingTop: 0,
+      paddingBottom: 0,
+      itemsPerChunk: 0,
+      itemHeight: 0
     }
   },
   computed: {
-    flatNodes () { return flattenVisible(this.roots) }
+    flatNodes () {
+      return flattenVisible(this.roots)
+    },
+    visibleChunk () {
+      return this.flatNodes.slice(this.firstVisibleIndex, this.firstVisibleIndex + this.itemsPerChunk + 1)
+    }
   },
   components: {
     FlatNode
@@ -49,6 +64,26 @@ export default {
       this.roots = []
       apply(nodes, n => { n.expanded = true })
       this.roots = nodes
+    },
+    updateMeasurements () {
+      this.height = this.$refs.container.clientHeight
+      this.itemHeight = 21
+      this.itemsPerChunk = Math.ceil(this.height / this.itemHeight)
+    },
+    updateVirtualization (event) {
+      if (!this.virtualize) {
+        return
+      }
+      const y = this.$refs.container.scrollTop
+      this.firstVisibleIndex = Math.floor(y / this.itemHeight)
+      // const offset = y % this.itemHeight
+      // const totalHeight = this.flatNodes.length * this.itemHeight
+      const topHidden = Math.max(this.firstVisibleIndex - 1, 0)
+      this.paddingTop = topHidden * this.itemHeight
+      const bottomHidden = Math.max(this.flatNodes.length - this.firstVisibleIndex - this.itemsPerChunk - 1, 0)
+      this.paddingBottom = bottomHidden * this.itemHeight
+      console.log(`topHidden: ${topHidden}, bottomHidden: ${bottomHidden}`)
+      console.log(this.firstVisibleIndex)
     }
   },
   watch: {
@@ -56,6 +91,12 @@ export default {
   },
   created () {
     this.roots = this.nodes
+  },
+  mounted () {
+    if (this.virtualize) {
+      this.updateMeasurements()
+      this.$refs.container.addEventListener('scroll', this.updateVirtualization)
+    }
   }
 }
 </script>

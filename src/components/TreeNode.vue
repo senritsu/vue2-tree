@@ -23,9 +23,9 @@ export default {
     },
     nodeIcon () {
       if (this.hasChildren) {
-        return this.node.expanded ? 'fa-minus-square-o' : 'fa-plus-square-o'
+        return this.node.expanded ? 'fa-minus-square' : 'fa-plus-square'
       } else {
-        return 'fa-square-o'
+        return 'fa-square'
       }
     }
   },

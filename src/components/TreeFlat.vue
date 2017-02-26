@@ -2,7 +2,7 @@
   <div class="tree">
     <button class="button" @click="expandAll">Expand All</button>
     <transition-group name="node">
-      <flat-node class="node" v-for="x in flatNodes" :key="x.node" :node="x.node" :level="x.level"></flat-node>
+      <flat-node class="node" v-for="x in flatNodes" :key="x.node.id" :node="x.node" :level="x.level"></flat-node>
     </transition-group>
   </div>
 </template>

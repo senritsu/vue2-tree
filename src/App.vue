@@ -8,6 +8,7 @@
         </div>
         <div class="column is-3">
           <div class="notification is-info">Tree (nested DOM)</div>
+          <button class="button" disabled>Expand All</button>
           <tree-node :node="tree"></tree-node>
         </div>
       </div>
@@ -22,9 +23,12 @@ import TreeNode from './components/TreeNode'
 
 const randInt = (max) => Math.round(Math.random() * max)
 
+let id = 0
+
 const generateNode = (i, level) => {
   const children = generateNodes(randInt(2 * (6 - level)), level + 1)
   return {
+    id: id++,
     text: `L${level} Node ${i}`,
     expanded: children.length ? Math.random() < 0.2 : false,
     children
